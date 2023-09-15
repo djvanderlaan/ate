@@ -2,7 +2,7 @@ $fn=100;
 
 grid = 19.05;
 
-cross_height = 5+3.3-1.5;
+cross_height = 5+3.3-1.5+1;
 cross_width = 1.5;
 raster_height = 5-1.5;
 nwidth = 3;
@@ -64,17 +64,19 @@ difference() {
     rounded_cube([wwall, lwall, hwall], rwall);
   translate([0.01, 0.01, -1])
     cube([nwidth*grid-0.02, nlength*grid-0.02, hwall+2]);
+  // usb hole
+  translate([grid, nlength*grid-1, -cross_height-2.5-cthick-(-hwall+1.5)])
+    rotate([-90, 0, 0])
+    rounded_cube([busb, 5, wall+2], 2.4);
 }
 
 
-color("pink")
-translate([grid, nlength*grid-blength-cwall, -cross_height])
-mirror([0, 0, 1])
-  microprocase();
+//color("pink")
+//translate([grid, nlength*grid-blength, -cross_height])
+//mirror([0, 0, 1])
+//  microprocase();
 
-translate([grid, nlength*grid-1, -cross_height-2.5-cthick])
-rotate([-90, 0, 0])
-rounded_cube([busb, 5, wall+2], 2.4);
+
 
 echo(blength);
 
