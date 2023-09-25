@@ -58,25 +58,48 @@ wwall = nwidth*grid+2*wall;
 lwall = nlength*grid+2*wall;
 
 
-translate([0, 0, -hwall+1.5])
+
 difference() {
-  translate([wwall/2-wall, lwall/2-wall, 0])
+  translate([0, 0, -hwall+1.5])
+    translate([wwall/2-wall, lwall/2-wall, 0])
     rounded_cube([wwall, lwall, hwall], rwall);
-  translate([0.01, 0.01, -1])
+  translate([0, 0, -hwall+1.5])
+    translate([0.01, 0.01, -1])
     cube([nwidth*grid-0.02, nlength*grid-0.02, hwall+2]);
   // usb hole
-  translate([grid, nlength*grid-1, -cross_height-2.5-cthick-(-hwall+1.5)])
+  translate([grid, nlength*grid-1, -cross_height-3.5/2-bthick])
     rotate([-90, 0, 0])
-    rounded_cube([busb, 5, wall+2], 2.4);
+    rounded_cube([busb+0.5, 3.5, wall+2], 1.75);  
+  // slot for plate
+  translate([grid-bwidth/2, nlength*grid-1, -cross_height-bthick-0])
+    cube([bwidth, wall, bthick+0]);
 }
+
 
 
 //color("pink")
 //translate([grid, nlength*grid-blength, -cross_height])
 //mirror([0, 0, 1])
-//  microprocase();
+//  #microprocase();
 
+//color("green")
+//translate([grid-bwidth/2, nlength*grid-1, -cross_height-bthick-0])
+//cube([bwidth, wall, bthick+0]);
 
+translate([grid-cross_width/2, nlength*grid+1-5-blength-0.5, -cross_height-bheight])
+  cube([cross_width, 5, bheight]);
+
+translate([grid-cross_width/2, nlength*grid+1-cross_width-blength-0.5, -cross_height])
+rotate([0, 0, 90])
+wedge([cross_width, 4, 4]);
+
+translate([grid+cross_width/2, nlength*grid+1-cross_width-blength-0.5, -cross_height])
+mirror([1, 0, 0])
+rotate([0, 0, 90])
+wedge([cross_width, 4, 4]);
+
+translate([grid-(cross_width+2*4)/2, nlength*grid+1-cross_width-blength-0.5, -cross_height-bheight])
+cube([cross_width+2*4, cross_width, bheight]);
 
 echo(blength);
 
