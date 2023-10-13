@@ -26,20 +26,26 @@ case_bevel_corner = 5;
 case_bevel_bottom = 3;
 case_bevel_inner  = 2;
 
-// Parameters for raster
+// == Parameters for raster
 raster_height     = 5-1.5;
 raster_width      = 1.5;
 raster_skip       = 1;
 
+// == Parameters for guides
+guide_width       = raster_width;
+guide_height      = switch_stick_out + 1;
+guide_left        = plate_grid*0.6;
+guide_right       = plate_grid*0.1;
+guide_top         = plate_grid*0.5;
+guide_bottom      = plate_grid*0.15;
 
-//cross_height = 5+3.3-1.5+1;
-//cross_width = 1.5;
+// == Parameters for bottom
+bottom_thickness  = 2;
+bottom_inset      = bottom_thickness;
+bottom_edge       = 5;
 
 
 
-//wall = 2;
-//rwall = 4;
-//hwall = 5+3.3+1.5+6;
 
 
 
@@ -72,6 +78,9 @@ difference() {
     beveled_cube([plate_width-2*mar, plate_length-2*mar, case_height+2],
       [0.1, 0.1], case_bevel_inner, [0.1,0.1]);  
   // TODO cutout for bottom
+  translate([0, 0, -mar])
+    beveled_cube([plate_width+2*bottom_edge, plate_length+2*bottom_edge, bottom_inset+mar],
+      [0, 0], case_bevel_inner, [0,0]);
   // TODO cutout for USB-port and controler
 }
 
@@ -92,8 +101,27 @@ for (i = [1:(plate_nwidth-1)]) {
   }
 }
 
-
-
+// === GUIDES
+// Guides in x/width direction
+for (j = [1:(plate_nlength-1)]) for (i = [1:(plate_nwidth)]) {
+  // Left part of guide
+  translate([i*plate_grid-guide_left+mar, j*plate_grid-guide_width/2, -guide_height])
+    cube([guide_left+mar, guide_width, guide_height+mar]);
+  // Right part 
+  translate([i*plate_grid-plate_grid-mar, j*plate_grid-guide_width/2, -guide_height])
+    cube([guide_right+mar, guide_width, guide_height+mar]);
+}
+// Guides in y/length direction
+for (j = [1:(plate_nlength)]) for (i = [1:(plate_nwidth-1)]) {
+  if (j != 1 || i != raster_skip) {
+    // Top part of guide
+    translate([i*plate_grid-guide_width/2, j*plate_grid-guide_top+mar, -guide_height])
+      cube([guide_width, guide_top+mar, guide_height+mar]);
+    // Bottom part of guide
+    translate([i*plate_grid-guide_width/2, (j-1)*plate_grid-mar, -guide_height])
+      cube([guide_width, guide_bottom+mar, guide_height+mar]);
+  }
+}
 
 
 
