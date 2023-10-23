@@ -26,7 +26,7 @@ cfront = 2.4;
 cpad = 1;
 
 
-example_board = false;
+example_board = true;
 if (example_board) {
   translate([0, 0, cthick+0.1])
   color("darkred") {
