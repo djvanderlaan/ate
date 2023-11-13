@@ -1,6 +1,6 @@
-[{p:"DSA",a:7},"",{a:4},"!\n1\n\n~","@\n2\n\n`","#\n3","$\n4","%\n5","^\n6","&\n7","*\n8","(\n9",")\n0","_\n-\n+\n="],
-[{a:7},"",{a:4},"\nq","\nw","\ne","\nr","\nt","\ny","\nu","\ni","\no","\np","DL\nBS"],
-[{a:7},"Esc",{a:4},"\na","\ns","\nd","\nf","\ng","\nh","\nj","\nk","\nl",":\n;\n\"\n'",{a:7},"Return"],
-["",{a:4},"\nz","\nx","\nc","\nv","\nb","\nn","\nm","<\n,\n{\n[",">\n.\n}\n]","?\n/\n|\n\\",{a:7},""],
-["Ctrl","Super","Alt","","&uArr;",{a:5,w:2},"Tab\nSpace",{a:7},"&rArr;","&larr;","&darr;","&uarr;","&rarr;"]
+[{p:"DSA"},"~\n`\nF1\n℃","!\n1\nF2\n°","@\n2\nF3\n≡","#\n3\nF4\n≈","$\n4\nF5\n≥","%\n5\nF6\n≤","^\n6\nF7\n≈","&\n7\nF8\n≠","*\n8\nF9\n×","(\n9\nF10\n⋅",")\n0\nF11\n+","_\n-\nF12\n="],
+["┌\n└\n┐\n┘","Q\nq\n─\n│","W\nw\n∌\n∋","E\ne\n∃\nε","R\nr\n√\nρ","T\nt\n²\nθ","Y\ny\n⇐\n⇒","U\nu\n∩\n∪","I\ni\n∫\n∏","O\no\n∅\n{","P\np\nπ\n}","DL\nBS\n\n|"],
+[{a:7},"Esc",{a:4},"A\na\n∀\nα","S\ns\n∑\nσ","D\nd\nΔ\nδ","F\nf\n∉\n∈","G\ng\n⋮\n⋯","H\nh\n∞\n<-","J\nj\n∝\n|>","K\nk\n⊻\n⊼","L\nl\n⊽\nλ",":\n;\n\"\n'",{a:7},"Return"],
+["Shift",{a:4},"Z\nz\n←\n→","X\nx\n↔\nχ","C\nc\n\nγ","V\nv\n∨\n∧","B\nb\n÷\nβ","N\nn\n∇\n¬","M\nm\n±\nμ","<\n,\n∴\n[",">\n.\n…\n]","?\n/\n∎\n\\",{a:7},"Shift"],
+["Ctrl","SU","Alt","AltGr","&uArr;",{a:5,w:2},"TB\nSP",{a:7},"&rArr;",{a:4},"HM\n&larr;","PD\n&darr;","PU\n&uarr;","EN\n&rarr;"]
 
