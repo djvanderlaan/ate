@@ -5,4 +5,8 @@ A⋅TE
 A⋅TE-B1
 ----------------------------------------------------
 
+![Photo of ATE-B1 keyboard](b1/photos/xs/ate-b1-finished2.jpg)
+
+
+
 
