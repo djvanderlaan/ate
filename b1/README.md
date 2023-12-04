@@ -81,7 +81,7 @@ keyboard](photos/xs/ate-b1-electronics.jpg)
 
 First, follow [the instructions](https://docs.qmk.fm/#/newbs_getting_started) to
 set up QMK. The git repository contains the keyboard configuration for the
-A⋅TE⋅B1 under `sofware/`. Copy the contents of this directory to the
+A⋅TE⋅B1 under `qmk/`. Copy the contents of this directory to the
 `keyboards/` directory under QMK or make a symbolic link (under linux).
 
 Note the code assumes that the controller is wired as above and that the same
