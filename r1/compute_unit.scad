@@ -1,4 +1,4 @@
-
+  
 $fn=100;
 mar = 0.01;
 
@@ -12,6 +12,22 @@ screen_bwidth     = 165.20;
 screen_blength    = 124.70; 
 screen_cablew     = 50;
 screen_cablel     = 2;
+
+// == Parameters for LCD driver
+// https://cdn.shopify.com/s/files/1/0174/1800/files/8inchdriver-drawing.png?v=1652097750
+driver_width      = 65.00;
+driver_length     = 56.00;
+driver_holewidth  = 58.00;
+driver_holelength = 49.00;
+driver_offset     = [screen_width/2-(61.00+3.5)-driver_holewidth/2, 
+screen_length/2-(31.00+3.5)-driver_holelength/2];
+
+echo(driver_offset);
+
+
+pi_holewidth  = 49.00;
+pi_holelength = 58.00;
+pi_offset  = [40.5, 27.0];
 
 // == Parameters of plate
 plate_bevel       = 2;
@@ -30,6 +46,7 @@ case_bevel_top    = 3;
 case_bevel_corner = 5;
 case_bevel_bottom = 3;
 case_bevel_inner  = 2;
+
 
 
 
@@ -65,6 +82,24 @@ difference() {
 //translate([0, 0, -1])
 //  beveled_cube([plate_width-2*mar, plate_length-2*mar, case_height+2],
 //    [0.1, 0.1], case_bevel_inner, [0.1,0.1]);  
+
+// lcd driver
+translate([driver_offset[0], driver_offset[1], plate_thickness]) {
+  translate([ driver_holewidth/2,  driver_holelength/2, 0]) cylinder(r = 5, h = 4);
+  translate([ driver_holewidth/2, -driver_holelength/2, 0]) cylinder(r = 5, h = 4);
+  translate([-driver_holewidth/2,  driver_holelength/2, 0]) cylinder(r = 5, h = 4);
+  translate([-driver_holewidth/2, -driver_holelength/2, 0]) cylinder(r = 5, h = 4);
+}
+
+
+// raspberry pi
+//translate([driver_offset[0], driver_offset[1], plate_thickness]) {
+//  translate([ driver_holewidth/2,  driver_holelength/2, 0]) cylinder(r = 5, h = 4);
+//  translate([ driver_holewidth/2, -driver_holelength/2, 0]) cylinder(r = 5, h = 4);
+//  translate([-driver_holewidth/2,  driver_holelength/2, 0]) cylinder(r = 5, h = 4);
+//  translate([-driver_holewidth/2, -driver_holelength/2, 0]) cylinder(r = 5, h = 4);
+//}
+
 
 
 module ccube(dim) {
