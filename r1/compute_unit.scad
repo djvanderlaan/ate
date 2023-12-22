@@ -22,10 +22,12 @@ plate_screen_pad  = 1;
 
 
 plate_screwmar     = 5;
-plate_screwr1      = 1.5;
-plate_screwr2      = 4;
-plate_screwh1      = 4;
-plate_screwh       = plate_screwh1+1;
+plate_screwr1      = 3.2/2;
+plate_screwr2      = plate_screwr1+1.7;
+// Depth of the screwhole; 4 = minimum for threaded insert
+plate_screwh       = 4+1;
+// The amount de screw hole sticks out from the front plate
+plate_screwh1      = plate_screwh - screen_thickness;
 plate_screws       = [
   [-screen_width/4,                 screen_length/2+plate_screwmar],
   [ screen_width/4,                 screen_length/2+plate_screwmar],
@@ -59,7 +61,7 @@ echo(driver_offset);
 // == Parameters for Raspberry Pi
 pi_holewidth  = 49.00;
 pi_holelength = 58.00;
-pi_offset  = [-screen_width/2 + 40.5 - pi_holewidth/2, 
+pi_offset  = [-screen_width/2 + 40.5-3 - pi_holewidth/2, 
     screen_length/2 - 27.0 - pi_holelength/2];
 
 // == Parameters for backplate
@@ -73,11 +75,11 @@ back_screwthickn  = 1.5;
 back_screwr       = 2.2/2;
 back_screwpad     = 0.1;
 
-support_h         = 5+back_thickness;
+support_h         = 4+back_thickness;
 support_r1        = 4.5/2;
-support_r2        = 6.5/2;
+support_r2        = 7/2;
 support_rscrew    = 2.6/2;
-support_h1        = 2;
+support_h1        = 3;
 
 // == Parameters of outer case
 case_pad          = 2*10;
@@ -91,46 +93,62 @@ case_bevel_inner  = 2;
 
 
 
+screen = false;
+frontplate = true;
+backplate = true;
+
 
 use<scad/beveled_cube.scad>
 
 
 // ===========================================================================
-
 // screen
-translate([-screen_width/2, -screen_length/2, plate_bevel])
-color("darkgray") {
-  cube([screen_width, screen_length, screen_thickness]);
-  // cable
-  translate([-screen_cablew/2+screen_width/2, screen_length, 0])
-    cube([screen_cablew, 1, screen_thickness*2]);
-}
 
+if (screen) {
+  translate([-screen_width/2, -screen_length/2, plate_bevel])
+  color("darkgray") {
+    cube([screen_width, screen_length, screen_thickness]);
+    // cable
+    translate([-screen_cablew/2+screen_width/2, screen_length, 0])
+      cube([screen_cablew, 1, screen_thickness*2]);
+  }
+
+}
 
 // ===========================================================================
-// plate
-difference() {
-  ccube([plate_width, plate_length, plate_thickness]);
-  translate([0, 0, -0.1])
-    ccube([screen_bwidth, screen_blength, plate_thickness+0.2]);
-  translate([0, 0, plate_bevel])
-    ccube([screen_width+2*plate_screen_pad, 
-      screen_length+2*plate_screen_pad, plate_thickness]);
-  translate([-screen_cablew/2, screen_length/2+plate_screen_pad, 
-    plate_bevel])
-  cube([screen_cablew, screen_cablel, plate_thickness]); 
+// frontplate
+
+if (frontplate) {
+    
+  // plate
+  difference() {
+    ccube([plate_width, plate_length, plate_thickness]);
+    translate([0, 0, -0.1])
+      ccube([screen_bwidth, screen_blength, plate_thickness+0.2]);
+    translate([0, 0, plate_bevel])
+      ccube([screen_width+2*plate_screen_pad, 
+        screen_length+2*plate_screen_pad, plate_thickness]);
+    translate([-screen_cablew/2, screen_length/2+plate_screen_pad, 
+      plate_bevel])
+    cube([screen_cablew, screen_cablel, plate_thickness]); 
+    
+     // screw holes on plate
+    for (i = [1:len(plate_screws)]) {
+      translate([plate_screws[i-1][0], plate_screws[i-1][1], plate_bevel])
+        cylinder(r = plate_screwr1, h = plate_screwh+mar);
+    }
+  } 
+  // screw holes on plate
+  for (i = [1:len(plate_screws)]) {
+    difference() {
+      translate([plate_screws[i-1][0], plate_screws[i-1][1], plate_bevel])
+        cylinder(r = plate_screwr2, h = plate_screwh);
+      translate([plate_screws[i-1][0], plate_screws[i-1][1], plate_bevel])
+        cylinder(r = plate_screwr1, h = plate_screwh+mar);
+    }
+  }
 }
 
-// screw holes on plate
-for (i = [1:len(plate_screws)]) {
-  difference() {
-    translate([plate_screws[i-1][0], plate_screws[i-1][1], plate_thickness-mar])
-      cylinder(r = plate_screwr2, h = plate_screwh);
-    translate([plate_screws[i-1][0], plate_screws[i-1][1], plate_bevel])
-      cylinder(r = plate_screwr1, h = plate_screwh+screen_thickness);
-  }
-  echo(i);
-}
 
 // ===========================================================================
 //beveled_cube([case_width, case_length, case_height], 
@@ -143,16 +161,16 @@ for (i = [1:len(plate_screws)]) {
 
 
 // ===========================================================================
-
 // backplate
-!color("red") 
-translate([0, 0, plate_thickness]) {
-  
-  union() {
-    ccube([back_width, back_length, back_thickness]);
 
-    // lcd driver
-    difference() {
+if (backplate) {
+
+  color("red") 
+  translate([0, 0, plate_thickness]) difference() {
+    union() {
+      ccube([back_width, back_length, back_thickness]);
+
+      // lcd driver
       translate([driver_offset[0], driver_offset[1], 0]) {
         translate([ driver_holewidth/2,  driver_holelength/2, 0]) 
           cylinder(r = support_r2, h = support_h);
@@ -162,7 +180,46 @@ translate([0, 0, plate_thickness]) {
           cylinder(r = support_r2, h = support_h);
         translate([-driver_holewidth/2, -driver_holelength/2, 0])
           cylinder(r = support_r2, h = support_h);
+        // wide rim
+        translate([ driver_holewidth/2,  driver_holelength/2, 0]) 
+          cylinder(r = support_r2+2, h = support_h-2);
+        translate([ driver_holewidth/2, -driver_holelength/2, 0])
+          cylinder(r = support_r2+2, h = support_h-2);
+        translate([-driver_holewidth/2,  driver_holelength/2, 0])
+          cylinder(r = support_r2+2, h = support_h-2);
+        translate([-driver_holewidth/2, -driver_holelength/2, 0])
+          cylinder(r = support_r2+2, h = support_h-2);
       }
+      // raspberry pi
+      translate([pi_offset[0], pi_offset[1], 0]) {
+        translate([ pi_holewidth/2,  pi_holelength/2, 0])
+          cylinder(r = support_r2, h = support_h);
+        translate([ pi_holewidth/2, -pi_holelength/2, 0])
+          cylinder(r = support_r2, h = support_h);
+        translate([-pi_holewidth/2,  pi_holelength/2, 0])
+          cylinder(r = support_r2, h = support_h);
+        translate([-pi_holewidth/2, -pi_holelength/2, 0])
+          cylinder(r = support_r2, h = support_h);
+        // wide rim
+        translate([ pi_holewidth/2,  pi_holelength/2, 0])
+          cylinder(r = support_r2+2, h = support_h-2);
+        translate([ pi_holewidth/2, -pi_holelength/2, 0])
+          cylinder(r = support_r2+2, h = support_h-2);
+        translate([-pi_holewidth/2,  pi_holelength/2, 0])
+          cylinder(r = support_r2+2, h = support_h-2);
+        translate([-pi_holewidth/2, -pi_holelength/2, 0])
+          cylinder(r = support_r2+2, h = support_h-2);
+      }
+      // screw holes on plate
+      for (i = [1:len(plate_screws)]) {
+        translate([plate_screws[i-1][0], plate_screws[i-1][1], 0])
+          cylinder(r = plate_screwr2+back_screwthickn, h = plate_screwh1+back_screwthickn);
+      }
+    }
+    
+    // The stuff below will be removed
+    union() {
+      // lcd driver
       translate([driver_offset[0], driver_offset[1], 0]) {
         // hole for screwhead
         translate([ driver_holewidth/2,  driver_holelength/2, -mar]) 
@@ -183,20 +240,7 @@ translate([0, 0, plate_thickness]) {
         translate([-driver_holewidth/2, -driver_holelength/2, -mar])
           cylinder(r = support_rscrew, h = support_h+2*mar);
       }
-    }
-
-    // raspberry pi
-    difference() {
-      translate([pi_offset[0], pi_offset[1], 0]) {
-        translate([ pi_holewidth/2,  pi_holelength/2, 0])
-          cylinder(r = support_r2, h = support_h);
-        translate([ pi_holewidth/2, -pi_holelength/2, 0])
-          cylinder(r = support_r2, h = support_h);
-        translate([-pi_holewidth/2,  pi_holelength/2, 0])
-          cylinder(r = support_r2, h = support_h);
-        translate([-pi_holewidth/2, -pi_holelength/2, 0])
-          cylinder(r = support_r2, h = support_h);
-      }
+      // raspberry pi
       translate([pi_offset[0], pi_offset[1], 0]) {
         // hole for screwhead
         translate([ pi_holewidth/2,  pi_holelength/2, -mar]) 
@@ -217,23 +261,29 @@ translate([0, 0, plate_thickness]) {
         translate([-pi_holewidth/2, -pi_holelength/2, -mar])
           cylinder(r = support_rscrew, h = support_h+2*mar);
       }
-    }
-
-    // screw holes on plate
-    for (i = [1:len(plate_screws)]) {
-      difference() {
-        translate([plate_screws[i-1][0], plate_screws[i-1][1], 0])
-          cylinder(r = plate_screwr2+back_screwthickn, h = plate_screwh+back_screwthickn);
+      // screw holes on plate
+      for (i = [1:len(plate_screws)]) {
         translate([plate_screws[i-1][0], plate_screws[i-1][1], +mar])
-          cylinder(r = back_screwr, h = plate_screwh+back_screwthickn);
+          cylinder(r = back_screwr, h = plate_screwh1+back_screwthickn);
         translate([plate_screws[i-1][0], plate_screws[i-1][1], -mar])
-          cylinder(r = plate_screwr2+back_screwpad, h = plate_screwh-back_screwthickn);
+          cylinder(r = plate_screwr2+back_screwpad, h = plate_screwh1-back_screwthickn);
+
       }
-      echo(i);
-    }
+      // hole for cable from lcd screen
+      translate([-screen_cablew/2-1, screen_length/2-1.5, -mar])
+        cube([screen_cablew+2, 5, screen_thickness*2]);
+    } 
   }
+
 }
 
+
+
+
+
+
+// ==============================================================================
+// UTILS
 
 module ccube(dim) {
   translate([-dim[0]*0.5, -dim[1]*0.5, 0]) cube(dim);
