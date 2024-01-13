@@ -14,7 +14,8 @@ screen_cablew     = 50;
 screen_cablel     = 2;
 // screen is not completely center in the panel at the top of the panel there is
 // at bit more space; therefore the hole for the screen needs to move offset up
-screen_offset     = 3;
+// first is left; second top
+screen_offset     = [2.5,3];
 
 // == Parameters of plate
 plate_bevel       = 2;
@@ -97,13 +98,13 @@ support_h1        = 3;
 // we will assume in the model that the height of the switch is lower than
 // that of the front plate; e.q. that we don't need space in the backplate
 // height excluding button
-switch_height     = 3.5;
+switch_height     = 3.5+0.5;
 // button is square width = depth
-switch_width      = 6.2;
+switch_width      = 6.2+0.5;
 switch_totheight  = 4.25;
-switch_wirer      = 1/2;
+switch_wirer      = 2/2;
 switch_wirespace  = 2.54*2;
-switch_rbutton    = 4/2;
+switch_rbutton    = 4.3/2;
 // distance from top of bevel down
 switch_top        = 10;
 
@@ -121,7 +122,7 @@ case_bevel_inner  = 2;
 
 screen = false;
 frontplate = true;
-backplate = true;
+backplate = false;
 
 
 use<scad/beveled_cube.scad>
@@ -147,10 +148,10 @@ if (screen) {
 if (frontplate) {
   // plate
   difference() {
-    translate([0, -1*screen_offset, 0])
+    translate([-screen_offset[0], -1*screen_offset[1], 0])
       ccube([plate_width, plate_length, plate_thickness]);
     // hole for the screen in the front
-    translate([0, -screen_offset, -0.1])
+    translate([-screen_offset[0], -screen_offset[1], -0.1])
       ccube([screen_bwidth, screen_blength, plate_thickness+0.2]);
     // hole for the panel itself
     translate([0, 0, plate_bevel])
@@ -207,7 +208,7 @@ if (backplate) {
   color("red") 
   translate([0, 0, plate_thickness]) difference() {
     union() {
-      translate([0, -screen_offset, 0])
+      translate([-screen_offset[0], -screen_offset[1], 0])
         ccube([back_width, back_length, back_thickness]);
 
       // lcd driver
