@@ -61,8 +61,8 @@ use<scad/beveled_cube.scad>
 use<scad/micropro_example.scad>
 use<scad/rounded_cube.scad>
 
-case = false;
-bottom = true;
+case = true;
+bottom = false;
 
 // how far does switch stick out at the back of the plate:
 // https://switches-sensors.zf.com/wp-content/uploads/2012/07/Keymodule_MX_EN.pdf

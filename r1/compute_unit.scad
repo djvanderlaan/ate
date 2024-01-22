@@ -21,13 +21,12 @@ screen_offset     = [2.5,3];
 plate_bevel       = 2;
 plate_thickness   = plate_bevel+screen_thickness;
 plate_width       = 19.05*12;
-plate_length      = screen_length+25;
+plate_length      = screen_length+20;
 plate_screen_pad  = 1;
 
-
-plate_screwmar     = 5;
+plate_screwmar     = 3.8;
 plate_screwr1      = 3.2/2;
-plate_screwr2      = plate_screwr1+1.7;
+plate_screwr2      = plate_screwr1+1.3;
 // Depth of the screwhole; 4 = minimum for threaded insert
 plate_screwh       = 4+1;
 // The amount de screw hole sticks out from the front plate
@@ -46,9 +45,6 @@ plate_screws       = [
   [-screen_width/2-plate_screwmar, 0],
   [-screen_width/2-plate_screwmar, +screen_length/2+plate_screwmar],
 ];
-
-
-
 
 
 // == Parameters for LCD driver
@@ -111,12 +107,32 @@ switch_top        = 10;
 // == Parameters of outer case
 case_pad          = 2*10;
 case_width        = 250;
-case_length       = 150;
-case_height       = 20;
+case_length       = plate_length+case_pad;
+case_height       = 36;
 case_bevel_top    = 3;
 case_bevel_corner = 5;
 case_bevel_bottom = 3;
 case_bevel_inner  = 2;
+case_screw_r      = 3.2/2; //M3
+case_screw_pos    = [-0.94*plate_width/2, -0.66*plate_width/2, -0.33*plate_width/2,
+  0*plate_width/2, 0.33*plate_width/2, 0.66*plate_width/2, 0.94*plate_width/2];
+
+// == Parameters for charging USB port
+//distance between screw holes
+usb_hwidth        = 16;
+usb_pos           = 70;
+usb_width         = 26;
+usb_front         = 2.7;
+usb_length        = 8;
+
+
+// == Parameters for bottom
+bottom_thickness  = 2;
+bottom_inset      = bottom_thickness;
+bottom_edge       = 5;
+bottom_mar        = 0.3;
+bottom_raster     = 2;
+
 
 
 
@@ -126,6 +142,7 @@ backplate = false;
 
 
 use<scad/beveled_cube.scad>
+use<scad/rounded_cube.scad>
 
 
 // ===========================================================================
@@ -139,7 +156,6 @@ if (screen) {
     translate([-screen_cablew/2+screen_width/2, screen_length, 0])
       cube([screen_cablew, 1, screen_thickness*2]);
   }
-
 }
 
 // ===========================================================================
@@ -191,13 +207,104 @@ if (frontplate) {
 
 
 // ===========================================================================
-//beveled_cube([case_width, case_length, case_height], 
-//    [case_bevel_top,case_bevel_top], case_bevel_corner, 
-//    [case_bevel_bottom, case_bevel_bottom]);
-// cut out central cube (where the plate is)
-//translate([0, 0, -1])
-//  beveled_cube([plate_width-2*mar, plate_length-2*mar, case_height+2],
-//    [0.1, 0.1], case_bevel_inner, [0.1,0.1]);  
+// outer case
+
+
+color("green")
+translate([-screen_offset[0], -screen_offset[1], 0]) {
+  difference(){
+    beveled_cube([case_width, case_length, case_height], 
+        [case_bevel_top,case_bevel_top], case_bevel_corner, 
+        [case_bevel_bottom, case_bevel_bottom]);
+    // cut out central cube (where the plate is)
+    translate([0, 0, -1])
+      beveled_cube([plate_width-2*mar, plate_length-2*mar, case_height+2],
+        [0.1, 0.1], case_bevel_inner, [0.1,0.1]);  
+    // cutout for keyboard
+    translate([0, -case_length/2+6, case_height])
+      ate_b1();
+    // cutout for usb for keyboard
+    translate([-5*19.05, -case_length/2-1, case_height-7/2-1])
+      rotate([-90, 0, 0])
+      beveled_cube([13, 7, 20], [0, 0], 2, [0, 0]);
+    // cut-out for bottom
+    translate([0, 0, case_height-bottom_inset+mar])
+    difference() {
+      beveled_cube([plate_width+2*bottom_edge, plate_length+2*bottom_edge, bottom_inset+mar],
+        [0, 0], case_bevel_inner, [0,0]);
+      translate([-5*19.06, -plate_length/2-bottom_edge, 0]) {
+        translate([-mar, -mar, -2*mar])
+          bevels([7+bottom_edge+mar, bottom_edge+mar, bottom_inset+6*mar], 0, bottom_edge);
+        mirror([1,0,0])
+          translate([-mar, -mar, -2*mar])
+          bevels([7+bottom_edge+mar, bottom_edge+mar, bottom_inset+6*mar], 0, bottom_edge);
+      }
+    }
+    // holes for the screws to fix the bottom plate
+    translate([(plate_width/2+bottom_edge/2-1), (plate_length/2+bottom_edge/2-1), case_height-bottom_inset-8+mar])
+      cylinder(r = 3.2/2, h = 8);
+    translate([(plate_width/2+bottom_edge/2-1), -(plate_length/2+bottom_edge/2-1), case_height-bottom_inset-8+mar])
+      cylinder(r = 3.2/2, h = 8);
+    translate([-(plate_width/2+bottom_edge/2-1), (plate_length/2+bottom_edge/2-1), case_height-bottom_inset-8+mar])
+      cylinder(r = 3.2/2, h = 8);
+    translate([-(plate_width/2+bottom_edge/2-1), -(plate_length/2+bottom_edge/2-1), case_height-bottom_inset-8+mar])
+      cylinder(r = 3.2/2, h = 8);
+    // holes to attach the keyboard
+    for (i = case_screw_pos) {
+      translate([i, -plate_length/2+1, case_height-ate_b1_height()/2])
+        rotate([90, 0, 0])
+      cylinder(r = case_screw_r, h = 20);
+    }
+    // hole for usb port
+    translate([usb_pos, plate_length/2+bottom_edge+2, case_height/2])
+      usb_hole(20, 20, height1=5, height2 = 5, width=15);
+    translate([usb_pos-usb_width/2, plate_length/2-mar, plate_thickness])
+      cube([usb_width, bottom_edge+mar, case_height]);
+    
+  }
+}
+
+
+// For attaching the USB power supply connector
+translate([-screen_offset[0], -screen_offset[1], 0])
+difference() {
+  translate([usb_pos-usb_width/2, plate_length/2-usb_length+bottom_edge, plate_thickness-mar])
+    cube([usb_width, usb_length+mar, case_height/2 - usb_hole_height()/2 - plate_thickness-1.6]);
+  translate([usb_pos-usb_hwidth/2, plate_length/2+bottom_edge-usb_front, 
+      case_height/2 - usb_hole_height()/2 -1.6 - 8 + mar])
+    cylinder(r = 3.2/2, h = 8);
+  translate([usb_pos+usb_hwidth/2, plate_length/2+bottom_edge-usb_front, 
+      case_height/2 - usb_hole_height()/2 -1.6 - 8 + mar])
+  cylinder(r = 3.2/2, h = 8);
+}
+
+
+//// Inset for USB-port
+//// at the bottom below the usb port the rim in the case for the bottom plate
+//difference() {
+//  translate([5*19.05, plate_length+bottom_edge+mar, -case_height+plate_thickness])
+//  mirror([0, 1, 0])
+//  union(){
+//    //cube([case_usb_inset, bottom_edge-controler_depth+mar, bottom_inset+mar]);
+//    translate([-mar, 0, 0])
+//      bevels([case_usb_inset/2+mar, bottom_edge-controller_depth+mar, bottom_inset+mar], 
+//        0, bottom_edge- controller_depth+mar);
+//    mirror([1, 0, 0]) 
+//      bevels([case_usb_inset/2, bottom_edge-controller_depth+mar, bottom_inset+mar], 
+//        0, bottom_edge-controller_depth+mar);
+//  }
+//  // cutout for USB
+//  translate([controller_row*plate_grid, plate_length+controller_depth+controller_wall, 
+//      -usb_hole_height()-guide_height-controller_base])
+//    translate([0, 0, 3.5/2])
+//      usb_hole(20, 10, 20);
+//}
+//
+//
+
+
+
+
 
 
 // ===========================================================================
@@ -341,3 +448,44 @@ if (backplate) {
 module ccube(dim) {
   translate([-dim[0]*0.5, -dim[1]*0.5, 0]) cube(dim);
 }
+
+module ate_b1() {  
+  // Setting copied from ate_b1 scad file
+  // == Parameters of plate
+  keyb_plate_grid        = 19.05;
+  keyb_plate_nwidth      = 12;
+  keyb_plate_nlength     = 5;
+  keyb_plate_width       = keyb_plate_grid*keyb_plate_nwidth;
+  keyb_plate_length      = keyb_plate_grid*keyb_plate_nlength;
+  // == Parameters of outer case
+  keyb_case_pad          = 2*10;
+  keyb_case_width        = keyb_plate_width + keyb_case_pad;
+  keyb_case_length       = keyb_plate_length + keyb_case_pad;
+  keyb_case_height       = 15.74;
+  keyb_case_bevel_top    = 3;
+  keyb_case_bevel_corner = 5;
+  keyb_case_bevel_bottom = 3;
+  // outside of case
+  translate([0,-keyb_case_length/2, -keyb_case_height]) 
+    beveled_cube([keyb_case_width, keyb_case_length, keyb_case_height], 
+        [keyb_case_bevel_top,keyb_case_bevel_top], keyb_case_bevel_corner, 
+        [keyb_case_bevel_bottom, keyb_case_bevel_bottom]);
+}
+
+function ate_b1_height() = 15.74;
+
+
+// length1 = length small hole usb
+// length2 = length large hole
+// height1 = height of large hole below small hole
+// height2 = height of large hole above small hole
+module usb_hole(length1, length2, height1 = 8/2, height2 = 8/2, width = 13, bevel = 2) {
+  translate([0, 0, (height2-height1)/2])
+  rotate([-90, 0, 0])
+  beveled_cube([width, height1+height2, length2], [0, 0], bevel, [0, 0]);
+  rotate([90, 0, 0]) 
+  rounded_cube([9.5, 3.5, length1], 1.75); 
+}
+function usb_width() = 9.5;
+function usb_hole_height() = 3.5;
+function usb_hole_width()  = 13;
