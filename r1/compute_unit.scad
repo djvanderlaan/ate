@@ -140,7 +140,8 @@ bottom_raster     = 2;
 
 screen = false;
 frontplate = false;
-backplate = true;
+backplate = false;
+bottom = true;
 
 
 use<scad/beveled_cube.scad>
@@ -466,6 +467,44 @@ if (backplate) {
 
 
 
+// ===========================================================================
+// === BOTTOM
+if (bottom) {
+  
+  //translate([(plate_width)/2, plate_length/2, -case_height+plate_thickness])
+  translate([-screen_offset[0], -screen_offset[1], case_height-bottom_thickness])
+  color("pink")
+  difference() {
+    // bottom
+    #beveled_cube([plate_width+2*bottom_edge-2*bottom_mar, plate_length+2*bottom_edge-2*bottom_mar,
+      bottom_thickness], [0, 0], case_bevel_inner, [0,0]);
+    // Inset for USB-port
+    translate([-5*19.06, -plate_length/2-bottom_edge, 0]) {
+      translate([-mar, -mar, -2*mar])
+        bevels([7+bottom_edge+mar+1*bottom_mar, bottom_edge+mar+bottom_mar, bottom_inset+6*mar], 
+          0, bottom_edge);
+      mirror([1,0,0])
+        translate([-mar, -mar, -2*mar])
+        bevels([7+bottom_edge+mar+1*bottom_mar, bottom_edge+mar+bottom_mar, bottom_inset+6*mar], 
+          0, bottom_edge);
+    }
+    // holes for the screws to fix the bottom plate
+    translate([+(plate_width/2+bottom_edge/2-1), +(plate_length/2+bottom_edge/2-1), bottom_thickness-0.4]) 
+      mirror([0, 0, 0]) screw_hole(r1 = 2/2, r2 = 4/2);
+    translate([-(plate_width/2+bottom_edge/2-1), +(plate_length/2+bottom_edge/2-1), bottom_thickness-0.4]) 
+      mirror([0, 0, 0]) screw_hole(r1 = 2/2, r2 = 4/2);
+    translate([+(plate_width/2+bottom_edge/2-1), -(plate_length/2+bottom_edge/2-1), bottom_thickness-0.4]) 
+      mirror([0, 0, 0]) screw_hole(r1 = 2/2, r2 = 4/2);
+    translate([-(plate_width/2+bottom_edge/2-1), -(plate_length/2+bottom_edge/2-1), bottom_thickness-0.4]) 
+      mirror([0, 0, 0]) screw_hole(r1 = 2/2, r2 = 4/2);  
+  }
+} // end bottom
+
+
+
+
+
+
 
 
 
@@ -516,3 +555,16 @@ module usb_hole(length1, length2, height1 = 8/2, height2 = 8/2, width = 13, beve
 function usb_width() = 9.5;
 function usb_hole_height() = 3.5;
 function usb_hole_width()  = 13;
+
+module screw_hole(r1, r2, l1=20, l2=20, mar = 0.01) {
+  dh = abs(r2-r1);
+  translate([0, 0, -l1-dh+mar])
+    cylinder(r = r1, h = l1);
+  translate([0, 0, -dh])
+    cylinder(r1 = r1, r2 = r2, h = dh);
+  translate([0, 0, -mar])
+    cylinder(r = r2, h = l2);
+}
+
+
+
