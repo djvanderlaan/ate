@@ -38,23 +38,63 @@ translate([0, 0, -screen_thickness]) {
 }
 
 
-back_supw    = screen_width+40;
+back_supw    = screen_width+20;
 back_supl    = 7;
 back_supt    = 2;
 back_suph    = 4;
+back_supr1   = 3.1/2;
+back_supr2   = 2.1/2;
 
-ccube([back_supw-2*(back_supl-back_supt), back_supl, back_supt]);
-translate([-back_supw/2+back_supl/2, 0, back_suph])
-  ccube([back_supl, back_supl, back_supt]);
-translate([+back_supw/2-back_supl/2, 0, back_suph])
-  ccube([back_supl, back_supl, back_supt]);
-translate([0, back_supl/2-back_supt/2, 0])
-  ccube([back_supw, back_supt, back_suph+back_supt]);
-translate([-back_supw/2-back_supt/2+back_supl, 0, 0])
-  ccube([back_supt, back_supl, back_suph+back_supt]);
-translate([+back_supw/2+back_supt/2-back_supl, 0, 0])
-  ccube([back_supt, back_supl, back_suph+back_supt]);
-//cube([back_screww, back_supl, back_screwh]);
+
+translate([0, 40, 0]) support();
+translate([0, 40, 0]) support_screws();
+translate([0, -40, 0]) support();
+translate([0, -40, 0]) support_screws();
+
+
+
+
+
+
+
+
+
+module support() {
+  difference() {
+    union() {
+      ccube([back_supw-2*(back_supl-back_supt), back_supl, back_supt]);
+      translate([-back_supw/2+back_supl/2, 0, back_suph])
+        ccube([back_supl, back_supl, back_supt]);
+      translate([+back_supw/2-back_supl/2, 0, back_suph])
+        ccube([back_supl, back_supl, back_supt]);
+      translate([0, back_supl/2-back_supt/2, 0])
+        ccube([back_supw, back_supt, back_suph+back_supt]);
+      translate([-back_supw/2-back_supt/2+back_supl, 0, 0])
+        ccube([back_supt, back_supl, back_suph+back_supt]);
+      translate([+back_supw/2+back_supt/2-back_supl, 0, 0])
+        ccube([back_supt, back_supl, back_suph+back_supt]);
+    }
+    union() {
+      translate([+back_supw/2-(back_supl-back_supt)/2, -back_supt/2, back_suph+back_supt-1])
+        cylinder(r = back_supr2, h = back_supt+2); 
+      translate([-back_supw/2+(back_supl-back_supt)/2, -back_supt/2, back_suph+back_supt-1])
+        cylinder(r = back_supr2, h = back_supt+2); 
+    }
+  }
+}
+
+module support_screws() {
+  translate([-back_supw/2+(back_supl-back_supt)/2, -back_supt/2, 0])
+      difference() {
+      ccube([back_supl-back_supt, back_supl-back_supt, back_suph]);
+      cylinder(r = back_supr1, h = back_suph+0.1); 
+    }
+  translate([+back_supw/2-(back_supl-back_supt)/2, -back_supt/2, 0])
+    difference() {
+      ccube([back_supl-back_supt, back_supl-back_supt, back_suph]);
+      cylinder(r = back_supr1, h = back_suph+0.1); 
+    }
+}
 
 
 
