@@ -139,9 +139,9 @@ bottom_raster     = 2;
 
 
 screen = false;
-frontplate = false;
+frontplate = true;
 backplate = false;
-bottom = true;
+bottom = fale;
 
 
 use<scad/beveled_cube.scad>
