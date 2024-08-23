@@ -25,8 +25,8 @@ bbezel = 2;
 bwall = 3;
 
 
-box = false;
-screenback = false;
+box = true;
+screenback = true;
 back = true;
 
 
