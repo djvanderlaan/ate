@@ -31,9 +31,9 @@ case_screend = 1.5;
 case_phi    = 90-acos((case_h2 - case_h1)/case_length);
 
 
-//#case_base1();
-//translate([screen_offset[0], case_screend, 0])
-//lcd();
+#case_base1();
+translate([screen_offset[0], case_screend, 0])
+lcd();
 
 
 

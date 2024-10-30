@@ -11,7 +11,7 @@ include<case_base.scad>
 //case_base1();
 //translate([screen_offset[0], case_screend, 0])
 //lcd();
-
+//
 //translate([0, 0, -screen_thickness]) {
 //  translate([screen_offset[0], case_screend, 0])
 //    lcd();
@@ -73,7 +73,7 @@ difference() {
 }
 
 // supports for screen and lcd driver
-!sup_support();
+sup_support();
 
 
 
