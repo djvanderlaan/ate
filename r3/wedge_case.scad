@@ -1,4 +1,4 @@
-
+      
 // ==================================================================
 // === PARAMETERS
 // ==================================================================
@@ -9,10 +9,10 @@ case_depth   = 150;
 case_h1      = 16;
 case_h2      = 26;
 
-wallb   = 3;   // wall thickness back
-wallf   = 6.5; // wall thickness front
-wallt   = 1.3; // wall thickness top
-walls   = 5;
+case_wallb   = 3;   // wall thickness back
+case_wallf   = 6.5; // wall thickness front
+case_wallt   = 1.3; // wall thickness top
+case_walls   = 5;
 
 case_bevels  = 5;
 case_bevelt  = 5;
@@ -22,29 +22,39 @@ case_bevelb  = 10;
 // === MODEL
 // ==================================================================
 
+wedgecase(case_width, case_depth, case_h1, case_h2, 
+   case_wallb, case_wallf, case_wallt, case_walls, 
+   case_bevels, case_bevelt, case_bevelb);
 
 
-difference(){
-wedgeshape(case_width, case_depth, case_h1, case_h2, 
-   case_bevels, case_bevelt, case_bevelb, mirror = true);
 
+// ==================================================================
+// === MODULE WEDGECASE
+// ==================================================================
 
-case_phi    = 90-acos((case_h2 - case_h1)/case_depth);
-
-
-color("red")
-translate([-0.001, wallf, -0.001])
-wedgeshape(case_width-2*walls, case_depth - wallb - wallf, 
-   case_h1 + wallf*tan(case_phi)-wallt*cos(case_phi), 
-   case_h2 - wallb*tan(case_phi)-wallt*cos(case_phi), 
-   case_bevels, case_bevelt, case_bevelb, true);
+module wedgecase(width, depth, h1, h2, 
+   wallb, wallf, wallt, walls, 
+   bevels, bevelt, bevelb
+) {
+   phi    = 90-acos((h2 - h1)/depth);
+   difference(){
+      wedgeshape(width, depth, h1, h2, 
+         bevels, bevelt, bevelb, mirror = true);
+      translate([-0.001, wallf, -0.001])
+         wedgeshape(width-2*walls, depth - wallb - wallf, 
+            h1 + wallf*tan(phi)-wallt*cos(phi), 
+            h2 - wallb*tan(phi)-wallt*cos(phi), 
+            bevels, bevelt, bevelb, true);
+   }
 }
 
 // ==================================================================
 // === MODULE WEDGESHAPE
 // ==================================================================
 
-module wedgeshape(width, depth, h1, h2, bevels, bevelt, bevelb, mirror = true) {
+module wedgeshape(width, depth, h1, h2, bevels, bevelt, bevelb, 
+   mirror = true
+) {
    points = [
       [0, bevels, 0],  // 1
       [depth - bevelb, bevels, 0], // 2
