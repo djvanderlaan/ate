@@ -127,7 +127,7 @@ module wedgeshape(width, depth, h1, h2, bevels, bevelt, bevelb,
       [0, bevels, h1],  //9
       [depth-bevelt, bevels, h2], //10
       [0, width/2+0.01, 0], // 11
-      [depth-bevelb, width/2, 0], // 12
+      [depth-bevelb, width/2+0.01, 0], // 12
       [depth, width/2+0.01, bevelb], // 13
       [0, width/2+0.01, h1], // 14
       [depth, width/2+0.01, h2-bevelt], // 15
@@ -145,7 +145,7 @@ module wedgeshape(width, depth, h1, h2, bevels, bevelt, bevelb,
       [9,15,14,7], 
       [0,1,11,10], 
       [8,13,15,9], 
-      [10,11,12,14,15,13], //[13,15,14,12,11,10], 
+      [10,11,12,14,15,13],
       [10,13,8,5,2,0], 
    ];
    rotate([0, 0, 90]) {
