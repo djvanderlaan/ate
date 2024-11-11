@@ -7,13 +7,13 @@ use<b1.scad>
 
 // == Parameters for case
 case_width   = 249;
-case_depth   = 150;
+case_depth   = 150-2;
 case_h1      = 16;
 case_h2      = 26;
 
 case_wallb   = 3;   // wall thickness back
 case_wallf   = 6.5; // wall thickness front
-case_wallt   = 3+1.3; // wall thickness top
+case_wallt   = 2+1.3; // wall thickness top
 case_walls   = 5;
 
 case_bevels  = 3;
@@ -39,10 +39,12 @@ indim = [
 // === MODEL
 // ==================================================================
 
-
-wedgecase(case_width, case_depth, case_h1, case_h2, 
-   case_wallb, case_wallf, case_wallt, case_walls, 
-   case_bevels, case_bevelt, case_bevelb);
+wedgecasedefault();
+color("red")
+wedgecaseouterdefault();
+//wedgecase(case_width, case_depth, case_h1, case_h2, 
+//   case_wallb, case_wallf, case_wallt, case_walls, 
+//   case_bevels, case_bevelt, case_bevelb);
 
 
 //// Front surface
@@ -56,9 +58,45 @@ wedgecase(case_width, case_depth, case_h1, case_h2,
 //   cube([indim[0], indim[1], case_wallt+2]);
 
 
+function wedgecasephi() = 
+   90-acos((case_h2 - case_h1)/(case_depth-case_bevelt));
+
+function wedgecasedim() =
+   [case_width, case_depth, case_h1, case_h2];
+
+// ==================================================================
+// === MODULE WEDGECASEDEFAULT
+// ==================================================================
+// Function creating wedgecase using the parameters in this script
+// to be called from other scripts.
+
+module wedgecasedefault() {
+   wedgecase(case_width, case_depth, case_h1, case_h2, 
+      case_wallb, case_wallf, case_wallt, case_walls, 
+      case_bevels, case_bevelt, case_bevelb);
+}
+
+// ==================================================================
+// === MODULE WEDGECASEOUTERDEFAULT
+// ==================================================================
+// Function creating wedgecase using the parameters in this script
+// to be called from other scripts.
+
+module wedgecaseouterdefault() { 
+   phi    = 90-acos((case_h2 - case_h1)/(case_depth-case_bevelt));
+   mirror([0, 0, 1])
+      translate([0, -case_depth/2+1*case_bevelt/2, 0])
+      rotate([-phi, 0, 0])
+      translate([0, 0, -case_h1])
+      wedgeshape(case_width, case_depth, case_h1, case_h2, 
+         case_bevels, case_bevelt, case_bevelb, mirror = true);
+}
+
+
 // ==================================================================
 // === MODULE WEDGECASE
 // ==================================================================
+// The generic case shape, centred and with inset for keyboard
 
 module wedgecase(width, depth, h1, h2, 
    wallb, wallf, wallt, walls, 
@@ -71,9 +109,9 @@ module wedgecase(width, depth, h1, h2,
          wallb, wallf, wallt, walls, 
          bevels, bevelt, bevelb);
       if (keyboardinset) {      
-         translate([0, -depth/2+1*bevelt/2, h1])
+         translate([0, -depth/2+1*bevelt/2, h1+0.1])
             rotate([phi, 0, 0])
-            translate([0, 4, 0])
+            translate([0, 3, 0])
             mirror([0, 1, 0])
             mirror([0, 0, 1])
             ate_b1_negative(); 
