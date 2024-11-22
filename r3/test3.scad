@@ -29,7 +29,8 @@ difference() {
    holeforswitch();
    // hole usb port
    charg_hole();
-   
+   // screwholes for support of screen
+   supportholes();
    // hole for pi zero in top
    translate([100-0.5, 0, 10+3.3-2])
       mirror([0, 0, 1])
@@ -43,9 +44,10 @@ difference() {
       mirror([0, 0, 1])
       pizeroholder();
    translate([52, -50, 0])
-      cube([50, 100, 3.5]);
+      cube([49, 100, 3.5]);
 }
 
+translate([0, 0, 3]) support();
 
 
 // ==================================================================
@@ -154,6 +156,74 @@ module charge_wedge(dim, xwedge) {
   
 }
 
+// ==================================================================
+// === BACK SUPPORT SCREEN
+// ==================================================================
+
+sup_width = 210;
+sup_depth = 90;
+
+driver_width      = 65.00;
+driver_depth      = 56.00;
+driver_holewidth  = 58.00;
+driver_holedepth  = 49.00;
+
+
+module supportholes() {
+   translate([sup_width/2, sup_depth/2, -0.1])
+      sub_screw_hole();
+   translate([sup_width/2, -sup_depth/2, -0.1])
+      sub_screw_hole();
+   translate([-sup_width/2, sup_depth/2, -0.1])
+      sub_screw_hole();
+   translate([-sup_width/2, -sup_depth/2, -0.1])
+      sub_screw_hole();
+}
+
+module support() {
+   translate([0, 0, 0]) {
+      difference() {
+         // holder for lcd driver
+         ccube([driver_width, sup_depth, 4]);
+         translate([0, 10, 0]) {
+            translate([driver_holewidth/2, driver_holedepth/2, -0.1])
+               cylinder(h = 10, r = 3.1/2);
+            translate([driver_holewidth/2, -driver_holedepth/2, -0.1])
+               cylinder(h = 10, r = 3.1/2);
+            translate([-driver_holewidth/2, driver_holedepth/2, -0.1])
+               cylinder(h = 10, r = 3.1/2);
+            translate([-driver_holewidth/2, -driver_holedepth/2, -0.1])
+               cylinder(h = 10, r = 3.1/2);
+            translate([0, 0, -0.1])
+               rounded_cube([driver_width-10, driver_depth-10, 5], r = 5);
+         }
+      }
+
+      // horizontal bars
+      difference() {
+         union() {
+            translate([0, sup_depth/2, 0])
+               rounded_cube([sup_width+10, 5, 4], r = 2.4);
+            translate([0, -sup_depth/2, 0])
+               rounded_cube([sup_width+10, 5, 4], r = 2.4);
+         }
+         translate([sup_width/2, sup_depth/2, -0.1])
+            cylinder(h = 10, r = 3.1/2);
+         translate([sup_width/2, -sup_depth/2, -0.1])
+            cylinder(h = 10, r = 3.1/2);
+         translate([-sup_width/2, sup_depth/2, -0.1])
+            cylinder(h = 10, r = 3.1/2);
+         translate([-sup_width/2, -sup_depth/2, -0.1])
+            cylinder(h = 10, r = 3.1/2);
+      }
+   }
+   
+}
+   
+module sub_screw_hole() {
+   cylinder(h = 15, r = 2.1/2);
+   cylinder(h = 2, r1 = 2.5, r2 = 0.5);
+}
 
 // ==================================================================
 // === PI ZERO 2 HOLDER
