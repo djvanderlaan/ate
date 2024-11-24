@@ -2,6 +2,7 @@ use<wedge_case.scad>
 use<screen.scad>
 use<scad/beveled_cube.scad>
 use<scad/rounded_cube.scad>
+use<batteryholder.scad>
 
 
 $fn=100;
@@ -47,8 +48,17 @@ difference() {
       cube([49, 100, 3.5]);
 }
 
-translate([0, 0, 3]) support();
 
+
+!union() {
+   translate([0, 0, 3]) support();
+   translate([-91, 40, 3])
+      rotate([0, 0, -90])
+      batteryholder(5);
+}
+
+
+//wedgecasebottomdefault();
 
 // ==================================================================
 // === INSET IN BACK
@@ -180,7 +190,7 @@ module supportholes() {
       sub_screw_hole();
 }
 
-module support() {
+module support_base() {
    translate([0, 0, 0]) {
       difference() {
          // holder for lcd driver
@@ -218,6 +228,24 @@ module support() {
       }
    }
    
+}
+
+
+
+
+
+module support() {
+   mirror([0, 1, 0])
+   mirror([1, 0, 0])
+   difference() {
+      union() {
+         support_base();
+         translate([driver_width/2+32-1, -sup_depth/2+15, 0])
+            ccube([64, 30, 4]);
+      }
+      translate([driver_width/2+64-50-6, -sup_depth/2-15+20, -1])
+         rounded_cube([100, 40, 6], r=2.5);
+   }
 }
    
 module sub_screw_hole() {
