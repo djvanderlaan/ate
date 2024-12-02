@@ -52,9 +52,9 @@ difference() {
 
 !union() {
    translate([0, 0, 3]) support();
-   translate([-91, 40, 3])
+   translate([-91+10, 40+12.8, 3])
       rotate([0, 0, -90])
-      batteryholder(5);
+      batteryholder(15,10);
 }
 
 
@@ -344,3 +344,17 @@ module cube1round(dim ,r) {
     cube([dim[0]-r, dim[1], dim[2]]);
 }                                                                                                                                                                                                    
                      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
