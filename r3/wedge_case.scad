@@ -41,6 +41,8 @@ indim = [
 
 wedgecasedefault();
 
+wedgecasebottomdefault();
+
 //color("red")
 //wedgecaseouterdefault();
 //wedgecase(case_width, case_depth, case_h1, case_h2, 
@@ -188,9 +190,10 @@ module wedgecasebottom(width, depth, h1, h2,
    wallb, wallf, wallt, walls, 
    bevels, bevelt, bevelb
 ) {
+   pad    = 0.5;
    phi    = 90-acos((h2 - h1)/(depth-bevelt));
-   dimbottom = [width-2*walls-2*bevels+7-1, 
-               depth - wallb - wallf- bevelb+2-1, 2];
+   dimbottom = [width-2*walls-2*bevels+7-pad, 
+               depth - wallb - wallf- bevelb+2-pad, 2];
    mirror([0, 0, 1])
       translate([0, -depth/2+1*bevelt/2, 0])
       rotate([-phi, 0, 0])
@@ -199,16 +202,16 @@ module wedgecasebottom(width, depth, h1, h2,
          translate([0, dimbottom[1]/2 + case_wallf+0.5, -0.1])
             beveled_cube(dimbottom, [0, 0], 4, [0, 0]);
          // screw holes
-         translate([dimbottom[0]/2-3, dimbottom[1]/2-5, 0])
+         translate([dimbottom[0]/2-3+pad/2, dimbottom[1]/2-5+pad/2, 0])
             translate([0, dimbottom[1]/2 + case_wallf, -0.1])
             translate([0, 0, -0.1]) sub_screw_hole();
-         translate([-(dimbottom[0]/2-3), dimbottom[1]/2-5, 0])
+         translate([-(dimbottom[0]/2-3+pad/2), dimbottom[1]/2-5+pad/2, 0])
             translate([0, dimbottom[1]/2 + case_wallf, -0.1])
             translate([0, 0, -0.1]) sub_screw_hole();
-         translate([-(dimbottom[0]/2-3), -(dimbottom[1]/2-5), 0])
+         translate([-(dimbottom[0]/2-3+pad/2), -(dimbottom[1]/2-5+pad/2), 0])
             translate([0, dimbottom[1]/2 + case_wallf, -0.1])
             translate([0, 0, -0.1]) sub_screw_hole();
-         translate([(dimbottom[0]/2-3), -(dimbottom[1]/2-5), 0])
+         translate([(dimbottom[0]/2-3+pad/2), -(dimbottom[1]/2-5+pad/2), 0])
             translate([0, dimbottom[1]/2 + case_wallf, -0.1])
             translate([0, 0, -0.1]) sub_screw_hole();
       } 

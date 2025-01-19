@@ -7,9 +7,9 @@ bat_h = 19;
 bat_w = 37-0.5;
 bat_l = 67;
 bat_t = 4;
-bat_b = 1;
+bat_b = 0;
 
-batteryholder(10, 20);
+batteryholder(15-4.5, 10);
 
 module batteryholder(extend = 0, extendy = 0) {
    difference() {
@@ -25,8 +25,11 @@ module batteryholder(extend = 0, extendy = 0) {
    }
       translate([-bat_w, -extendy-1, -10])
          cube([bat_w+extend, bat_l+extendy+2, bat_h+20]);
+      translate([-bat_w+bat_w/2, -1, -1])
+         cube([bat_w, bat_l+2, bat_h/2+1]);
    }
 
+   // stops at head and foot ofr battery
    translate([-15+bat_w/2, -3, 0])
       cube([extend+15, 3, 8]);
    translate([-15+bat_w/2, bat_l-0.01, 0])

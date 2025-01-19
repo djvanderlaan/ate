@@ -50,15 +50,15 @@ difference() {
 
 
 
-!union() {
-   translate([0, 0, 3]) support();
-   translate([-91+10, 40+12.8, 3])
-      rotate([0, 0, -90])
-      batteryholder(15,10);
-}
+//!union() {
+//   translate([0, 0, 3]) support();
+//   translate([-91+10, 40+12.8-4.5+2, 3])
+//      rotate([0, 0, -90])
+//      batteryholder(15-4.5+2,10);
+//}
 
 
-//wedgecasebottomdefault();
+!wedgecasebottomdefault();
 
 // ==================================================================
 // === INSET IN BACK
