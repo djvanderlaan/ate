@@ -15,6 +15,7 @@ bmiddlew2 = 5;
 
 function micropro_length() = blength;
 function micropro_width() = bwidth;
+function micropro_thickness() = bthick;
 
 
 module micropro_example() {

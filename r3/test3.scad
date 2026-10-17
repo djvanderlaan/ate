@@ -13,8 +13,8 @@ difference() {
       // wall for inset for switch and usb connector
       // make sure the same parameters are used as for the
       // caseholewallinset
-      translate([50, 0, 0])
-         caseholewall(width = 60, hshift = 4);
+      translate([50+33/2, 0, 0])
+         caseholewall(width = 60+33, hshift = 4);
       // holde usb port
       charg_holder();
    }
@@ -24,10 +24,15 @@ difference() {
       screenhole(3);
    // inset for switch and usb connector
    // use same parameters as for caseholewall above
-   translate([50, 0, 0])
-      caseholeinset(width = 60, hshift = 4);
+   translate([50+33/2, 0, 0])
+      caseholeinset(width = 60+33, hshift = 4);
    // hole for swich
-   holeforswitch();
+   translate([-3, 0, 0])
+      holeforswitch();
+   translate([44, 0, 0])
+      holeforswitch();
+   translate([66, 0, 0])
+      holeforswitch();
    // hole usb port
    charg_hole();
    // screwholes for support of screen
@@ -50,15 +55,15 @@ difference() {
 
 
 
-//!union() {
-//   translate([0, 0, 3]) support();
-//   translate([-91+10, 40+12.8-4.5+2, 3])
-//      rotate([0, 0, -90])
-//      batteryholder(15-4.5+2,10);
-//}
+!union() {
+   translate([0, 0, 3]) support();
+   translate([-91+10, 40+12.8-4.5+2, 3])
+      rotate([0, 0, -90])
+      batteryholder(15-4.5+2,10);
+}
 
 
-!wedgecasebottomdefault();
+//wedgecasebottomdefault();
 
 // ==================================================================
 // === INSET IN BACK
@@ -114,7 +119,7 @@ charg_r1    = 3.1/2;
 charg_d     = 4;
 charg_dhole = 1;
 
-module charg_hole(xshift = 65, hshift = 9) {
+module charg_hole(xshift = 65-8-3, hshift = 9) {
    phi = wedgecasephi();
    dim = wedgecasedim();
    rotate([phi, 0, 0])
@@ -128,7 +133,7 @@ module charg_hole(xshift = 65, hshift = 9) {
       }
 }
 
-module charg_holder(xshift = 65, hshift = 9) {
+module charg_holder(xshift = 65-8-3, hshift = 9) {
    phi = wedgecasephi();
    dim = wedgecasedim();
    rotate([phi, 0, 0])

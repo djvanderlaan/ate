@@ -41,7 +41,7 @@ indim = [
 
 wedgecasedefault();
 
-wedgecasebottomdefault();
+//wedgecasebottomdefault();
 
 //color("red")
 //wedgecaseouterdefault();
@@ -142,14 +142,14 @@ module wedgecase(width, depth, h1, h2,
 // ==================================================================
 // The generic case shape, not centred and without inset for 
 // keyboard
-
 module wedgecasebase(width, depth, h1, h2, 
    wallb, wallf, wallt, walls, 
    bevels, bevelt, bevelb
 ) {
    phi    = 90-acos((h2 - h1)/(depth-bevelt));
    dimbottom = [width-2*walls-2*bevels+7, 
-               depth - wallb - wallf- bevelb+2, 2+0.1];
+               depth - wallb - wallf- bevelb+2+1.5, 2+0.1];
+  
    mirror([0, 0, 1])
       translate([0, -depth/2+1*bevelt/2, 0])
       rotate([-phi, 0, 0])
@@ -164,21 +164,15 @@ module wedgecasebase(width, depth, h1, h2,
                h2 - wallb*tan(phi)-wallt*cos(phi)-1.5, 
                bevels, bevelt, bevelb, true);
          
-         translate([0, dimbottom[1]/2 + case_wallf, -0.1])
-            beveled_cube(dimbottom, [0, 0], 4, [0, 0]);
-         // screw holes
-         translate([dimbottom[0]/2-3, dimbottom[1]/2-5, 0])
-            translate([0, dimbottom[1]/2 + case_wallf, -0.1])
-            translate([0, 0, -0.1]) cylinder(h = 5, r = 3.1/2, $fn=100);
-         translate([-(dimbottom[0]/2-3), dimbottom[1]/2-5, 0])
-            translate([0, dimbottom[1]/2 + case_wallf, -0.1])
-            translate([0, 0, -0.1]) cylinder(h = 5, r = 3.1/2, $fn=100);
-         translate([-(dimbottom[0]/2-3), -(dimbottom[1]/2-5), 0])
-            translate([0, dimbottom[1]/2 + case_wallf, -0.1])
-            translate([0, 0, -0.1]) cylinder(h = 5, r = 3.1/2, $fn=100);
-         translate([(dimbottom[0]/2-3), -(dimbottom[1]/2-5), 0])
-            translate([0, dimbottom[1]/2 + case_wallf, -0.1])
-            translate([0, 0, -0.1]) cylinder(h = 5, r = 3.1/2, $fn=100);
+         translate([0, dimbottom[1]/2 + case_wallf-1.5, -0.1]) {
+            beveled_cube(dimbottom, [0, 0], 2, [0, 0]);
+            // screw holes
+            dholes = [(dimbottom[0])/2-4, (dimbottom[1])/2-4];
+            translate([+dholes[0], +dholes[1], -0.2]) cylinder(h = 10, r = 3.1/2, $fn=100);
+            translate([+dholes[0], -dholes[1], -0.2]) cylinder(h = 7, r = 3.1/2, $fn=100);
+            translate([-dholes[0], +dholes[1], -0.2]) cylinder(h = 10, r = 3.1/2, $fn=100);
+            translate([-dholes[0], -dholes[1], -0.2]) cylinder(h = 7, r = 3.1/2, $fn=100);
+         }
       } 
 }
 
@@ -190,32 +184,26 @@ module wedgecasebottom(width, depth, h1, h2,
    wallb, wallf, wallt, walls, 
    bevels, bevelt, bevelb
 ) {
-   pad    = 0.5;
+   pad    = 0.3;
    phi    = 90-acos((h2 - h1)/(depth-bevelt));
    dimbottom = [width-2*walls-2*bevels+7-pad, 
-               depth - wallb - wallf- bevelb+2-pad, 2];
+               depth - wallb - wallf- bevelb+2-pad+1.5, 2];
    mirror([0, 0, 1])
-      translate([0, -depth/2+1*bevelt/2, 0])
+      translate([0, -depth/2+1*bevelt/2-2-0.3, 0])
       rotate([-phi, 0, 0])
-      translate([0, 0, -h1])
+      translate([0, dimbottom[1]/2 + case_wallf+0.5, -h1])
       difference(){
-         translate([0, dimbottom[1]/2 + case_wallf+0.5, -0.1])
-            beveled_cube(dimbottom, [0, 0], 4, [0, 0]);
+         translate([0, 0 , -0.1])
+            beveled_cube(dimbottom, [0, 0], 2, [0, 0]);
          // screw holes
-         translate([dimbottom[0]/2-3+pad/2, dimbottom[1]/2-5+pad/2, 0])
-            translate([0, dimbottom[1]/2 + case_wallf, -0.1])
-            translate([0, 0, -0.1]) sub_screw_hole();
-         translate([-(dimbottom[0]/2-3+pad/2), dimbottom[1]/2-5+pad/2, 0])
-            translate([0, dimbottom[1]/2 + case_wallf, -0.1])
-            translate([0, 0, -0.1]) sub_screw_hole();
-         translate([-(dimbottom[0]/2-3+pad/2), -(dimbottom[1]/2-5+pad/2), 0])
-            translate([0, dimbottom[1]/2 + case_wallf, -0.1])
-            translate([0, 0, -0.1]) sub_screw_hole();
-         translate([(dimbottom[0]/2-3+pad/2), -(dimbottom[1]/2-5+pad/2), 0])
-            translate([0, dimbottom[1]/2 + case_wallf, -0.1])
-            translate([0, 0, -0.1]) sub_screw_hole();
+         dholes = [(dimbottom[0]+pad)/2-4, (dimbottom[1]+pad)/2-4];
+         translate([+dholes[0], +dholes[1], -0.2]) sub_screw_hole();
+         translate([+dholes[0], -dholes[1], -0.2]) sub_screw_hole();
+         translate([-dholes[0], +dholes[1], -0.2]) sub_screw_hole();
+         translate([-dholes[0], -dholes[1], -0.2]) sub_screw_hole();
       } 
 }
+
 
 module sub_screw_hole() {
    cylinder(h = 15, r = 2.1/2, $fn=100);
